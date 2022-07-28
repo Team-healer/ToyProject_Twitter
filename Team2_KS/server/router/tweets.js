@@ -4,7 +4,7 @@ import "express-async-errors";
 let tweets = [
   {
     id: "1",
-    text: "드림코더분들 화이팅!",
+    text: "드림코더분들 화이팅!(기존 트윗2)",
     createdAt: Date.now().toString(),
     name: "Bob",
     username: "bob",
@@ -12,14 +12,15 @@ let tweets = [
   },
   {
     id: "2",
-    text: "안뇽!",
+    text: "안뇽!(기존 트윗1)",
     createdAt: Date.now().toString(),
     name: "Ellie",
     username: "ellie",
   },
 ];
 const router = express.Router();
-
+console.log("refresh!");
+console.log(tweets);
 // GET /tweets
 // GET /tweets?username=:username
 router.get("/", (req, res, next) => {
@@ -52,7 +53,7 @@ router.post("/", (req, res, next) => {
     username,
   };
   tweets = [tweet, ...tweets];
-  res.status(201).json(tweet);
+  res.status(201).json(tweets);
 });
 
 // PUT /tweets/:id
@@ -71,8 +72,14 @@ router.put("/:id", (req, res, next) => {
 // DELETE /tweets/:id
 router.delete("/:id", (req, res, next) => {
   const id = req.params.id;
+  console.log("delete is working...");
+  console.log(id);
+  console.log("before filter, we had ", tweets.length, "tweets");
+  console.log(tweets);
   tweets = tweets.filter((tweet) => tweet.id !== id);
-  res.sendStatus(204);
+  console.log("but after filter, we have", tweets.length, "tweets");
+  console.log(tweets);
+  res.status(204).json(tweets);
 });
 
 export default router;
