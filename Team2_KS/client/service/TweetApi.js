@@ -1,6 +1,6 @@
 import React from "react";
-const baseURL = "http://localhost:8080";
-// const baseURL = "https://dwitter-hamin.herokuapp.com";
+// const baseURL = "http://localhost:8080";
+const baseURL = "https://dwitter-hamin.herokuapp.com";
 export const GetTweet = async (username) => {
   let query = username ? `?username=${username}` : "";
   const res = await fetch(`${baseURL}/tweets${query}`, {
