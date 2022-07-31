@@ -20,6 +20,7 @@ export const PostTweet = async (text, name) => {
       text,
       username: name,
       name,
+      heart: [],
     }),
   });
   const data = await response.json();
@@ -31,16 +32,30 @@ export const PostTweet = async (text, name) => {
 };
 
 export const DeleteTweet = async (tweetId) => {
-  console.log("start delete!");
   const response = await fetch(`${baseURL}/tweets/${tweetId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   });
-  console.log(response);
-  const data = await response.json();
   if (response.status !== 204) {
+    const data = await response.json();
     throw new Error(data.message);
   }
+};
+export const UpdateTweet = async (tweetId, text) => {
+  const response = await fetch(`${baseURL}/tweets/${tweetId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  const data = await response.json();
   console.log(data);
+  if (response.status !== 200) {
+    throw new Error(data.message);
+  }
   return data;
+};
+export const PushHeart = async (tweetId, username) => {
+  const response = await fetch(
+    `${baseURL}/tweets/heart/${tweetId}/${username}`
+  );
 };

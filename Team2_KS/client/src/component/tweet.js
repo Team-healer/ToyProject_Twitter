@@ -1,18 +1,28 @@
 import { StatusBar } from "expo-status-bar";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import {
+  Alert,
+  DevSettings,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import DialogInput from "react-native-dialog-input";
-import { DeleteTweet } from "../../service/TweetApi";
+import { DeleteTweet, UpdateTweet, PushHeart } from "../../service/TweetApi";
 
 export default function EachTweet({ eachTweet, name, setToTweet }) {
-  // console.log(eachTweet);
+  const [visible, setVisible] = useState(false);
+
   const deleteTweet = () => {
     Alert.alert("Delete Tweet", "Are you sure?", [
       { text: "Cancel" },
       {
         text: "I'm Sure",
         style: "destructive",
-        onPress: async () => await DeleteTweet(eachTweet.id),
+        onPress: () => {
+          DeleteTweet(eachTweet.id).then(() => DevSettings.reload());
+        },
       },
     ]);
   };
@@ -22,33 +32,44 @@ export default function EachTweet({ eachTweet, name, setToTweet }) {
         <Text>{eachTweet.name}</Text>
         <Text>{eachTweet.createdAt}</Text>
       </View>
-      <TouchableOpacity onPress={() => deleteTweet()}>
+      <TouchableOpacity onPress={deleteTweet}>
         {eachTweet.name === name ? <Text>삭제하기</Text> : null}
       </TouchableOpacity>
-      {/* <DialogInput
+      <TouchableOpacity
+        onPress={() => {
+          setVisible(true);
+        }}
+      >
+        {eachTweet.name === name ? <Text>수정하기</Text> : null}
+      </TouchableOpacity>
+      <DialogInput
         isDialogVisible={visible}
         title={"Modify Tweet"}
         message={"Do you want to modify tweet?"}
         hintInput={"Enter Text"}
         submitInput={(inputText) => {
-          const newToTweet = { ...toTweet };
-          neweachTweet.text = inputText;
-          setToTweet(newToTweet);
+          console.log(eachTweet.id, inputText);
+          UpdateTweet(eachTweet.id, inputText).then(() => DevSettings.reload());
           setVisible(false);
         }}
         closeDialog={() => {
           setVisible(false);
         }}
       ></DialogInput>
-      <TouchableOpacity
-        onPress={() => {
-          setVisible(true);
-        }}
-      >
-        {eachTweet.nickname === nickname ? <Text>수정하기</Text> : null}
-      </TouchableOpacity> */}
-
-      <Text style={styles.toTweetText}>{eachTweet.text}</Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={styles.toTweetText}>{eachTweet.text}</Text>
+        <TouchableOpacity
+          onPress={() =>
+            PushHeart(eachTweet.id, name).then(() => DevSettings.reload())
+          }
+        >
+          <Text>
+            {eachTweet.heart && eachTweet.heart.includes(name)
+              ? `❤️ ${eachTweet.heart.length}`
+              : `🤍 ${eachTweet.heart.length}`}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

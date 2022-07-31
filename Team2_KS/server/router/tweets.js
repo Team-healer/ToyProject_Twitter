@@ -1,6 +1,5 @@
 import express from "express";
 import "express-async-errors";
-
 let tweets = [
   {
     id: "1",
@@ -9,6 +8,7 @@ let tweets = [
     name: "Bob",
     username: "bob",
     url: "https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-1.png",
+    heart: ["user", "bob", "ellie"],
   },
   {
     id: "2",
@@ -16,6 +16,7 @@ let tweets = [
     createdAt: Date.now().toString(),
     name: "Ellie",
     username: "ellie",
+    heart: ["bob"],
   },
 ];
 const router = express.Router();
@@ -51,6 +52,7 @@ router.post("/", (req, res, next) => {
     createdAt: new Date().getTime(),
     name,
     username,
+    heart: [],
   };
   tweets = [tweet, ...tweets];
   res.status(201).json(tweets);
@@ -72,14 +74,23 @@ router.put("/:id", (req, res, next) => {
 // DELETE /tweets/:id
 router.delete("/:id", (req, res, next) => {
   const id = req.params.id;
-  console.log("delete is working...");
-  console.log(id);
-  console.log("before filter, we had ", tweets.length, "tweets");
-  console.log(tweets);
   tweets = tweets.filter((tweet) => tweet.id !== id);
-  console.log("but after filter, we have", tweets.length, "tweets");
+  res.sendStatus(204);
+});
+
+router.get("/heart/:postId/:username", (req, res, next) => {
+  const { postId, username } = req.params;
+  const clickedTweet = tweets.find((tweet) => tweet.id === postId);
+  const check = clickedTweet.heart.includes(username);
+  if (check) {
+    console.log("already did heart");
+    clickedTweet.heart = clickedTweet.heart.filter((e) => e !== username);
+  } else {
+    console.log("i will +1 heart");
+    clickedTweet.heart.push(username);
+  }
   console.log(tweets);
-  res.status(204).json(tweets);
+  res.sendStatus(200);
 });
 
 export default router;

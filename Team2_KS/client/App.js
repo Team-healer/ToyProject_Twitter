@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { theme } from "./styles";
 import React, { useEffect, useState } from "react";
-import DialogInput from "react-native-dialog-input";
 import EachTweet from "./src/component/tweet";
 import { GetTweet, PostTweet } from "./service/TweetApi";
 
@@ -18,14 +17,15 @@ export default function App() {
   const [mytweeting, setmytweeting] = useState(false);
   const [text, setText] = useState("");
   const [toTweet, setToTweet] = useState([
-    { id: 1, text: "hi", mytweeting: true, nickname: "hamin" },
+    { id: 1, text: "hi", mytweeting: true, nickname: "hamin", heart: 1 },
   ]);
   const alltweet = () => setmytweeting(false);
   const mytweet = () => setmytweeting(true);
   const onChangeText = (payload) => setText(payload);
   const onChangeNick = (account) => setNickname(account);
-  const [visible, setVisible] = React.useState(false);
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState("user");
+  const [init, setInit] = useState(false);
+
   const addNickname = () => {
     if (nickname === "") {
       return;
@@ -33,7 +33,9 @@ export default function App() {
   };
   useEffect(() => {
     console.log("init!!");
-    GetTweet().then((res) => setToTweet(res));
+    GetTweet()
+      .then((res) => setToTweet(res))
+      .then(() => setInit(true));
   }, []);
   const addTweet = () => {
     console.log("click!");
@@ -43,32 +45,6 @@ export default function App() {
     PostTweet(text, nickname).then((res) => setToTweet(res));
     setText("");
   };
-  const deleteTweet = (key) => {
-    Alert.alert("Delete Tweet", "Are you sure?", [
-      { text: "Cancel" },
-      {
-        text: "I'm Sure",
-        style: "destructive",
-        onPress: () => {
-          const newToTweet = { ...toTweet };
-          delete newToTweet[key];
-          setToTweet(newToTweet);
-        },
-      },
-    ]);
-  };
-  // const modifyTweet = (key) => {
-  //   if(input===""){
-  //     return;
-  //   }
-
-  //   const newToTweet = {...toTweet};
-  //   newToTweet[key].text = input;
-  //   setToTweet(newToTweet);
-
-  // };
-  // console.log("refresh!");
-  // console.log(toTweet);
 
   return (
     <View style={styles.container}>
@@ -120,14 +96,15 @@ export default function App() {
         </TouchableOpacity>
       </View>
       <ScrollView>
-        {toTweet.map((eachTweet, i) => (
-          <EachTweet
-            eachTweet={eachTweet}
-            key={i}
-            name={nickname}
-            setToTweet={setToTweet}
-          />
-        ))}
+        {init &&
+          toTweet.map((eachTweet, i) => (
+            <EachTweet
+              eachTweet={eachTweet}
+              key={i}
+              name={nickname}
+              setToTweet={setToTweet}
+            />
+          ))}
       </ScrollView>
     </View>
   );
