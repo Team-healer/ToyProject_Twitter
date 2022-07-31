@@ -1,7 +1,9 @@
 import React from "react";
 const baseURL = "http://localhost:8080";
-export const GetTweet = async () => {
-  const res = await fetch(`${baseURL}/tweets`, {
+// const baseURL = "https://dwitter-hamin.herokuapp.com";
+export const GetTweet = async (username) => {
+  let query = username ? `?username=${username}` : "";
+  const res = await fetch(`${baseURL}/tweets${query}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
@@ -9,10 +11,10 @@ export const GetTweet = async () => {
     throw new Error(data.message);
   }
   const data = await res.json();
+  console.log("data availabe?");
   return data;
 };
 export const PostTweet = async (text, name) => {
-  console.log(text, name);
   const response = await fetch(`${baseURL}/tweets/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,7 +29,6 @@ export const PostTweet = async (text, name) => {
   if (response.status !== 201) {
     throw new Error(data.message);
   }
-  console.log(data);
   return data;
 };
 
@@ -48,7 +49,6 @@ export const UpdateTweet = async (tweetId, text) => {
     body: JSON.stringify({ text }),
   });
   const data = await response.json();
-  console.log(data);
   if (response.status !== 200) {
     throw new Error(data.message);
   }

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ToyProject",
-    "slug": "ToyProject",
+    "name": "ToyProject_team2_KS",
+    "slug": "toyproject_team2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,6 +28,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }

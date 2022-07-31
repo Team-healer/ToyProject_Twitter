@@ -19,8 +19,12 @@ export default function App() {
   const [toTweet, setToTweet] = useState([
     { id: 1, text: "hi", mytweeting: true, nickname: "hamin", heart: 1 },
   ]);
-  const alltweet = () => setmytweeting(false);
-  const mytweet = () => setmytweeting(true);
+  const alltweet = () => {
+    GetTweet().then((res) => setToTweet(res));
+  };
+  const mytweet = () => {
+    GetTweet(nickname).then((res) => setToTweet(res));
+  };
   const onChangeText = (payload) => setText(payload);
   const onChangeNick = (account) => setNickname(account);
   const [nickname, setNickname] = useState("user");
@@ -38,7 +42,6 @@ export default function App() {
       .then(() => setInit(true));
   }, []);
   const addTweet = () => {
-    console.log("click!");
     if (text === "") {
       return;
     }
@@ -51,14 +54,6 @@ export default function App() {
       <StatusBar style="auto" />
       <View style={styles.header}>
         <Text style={{ fontSize: 30, color: "white" }}>Dwitter</Text>
-        <Text style={{ color: theme.blue }}>@</Text>
-        <TextInput
-          onSubmitEditing={addNickname}
-          onChangeText={onChangeNick}
-          placeholder={"nickname"}
-          value={nickname}
-          style={styles.inputnickname}
-        />
         <TouchableOpacity onPress={alltweet}>
           <Text
             style={{
@@ -84,16 +79,28 @@ export default function App() {
         </TouchableOpacity>
       </View>
       <View style={styles.inputpadding}>
-        <TextInput
-          onSubmitEditing={addTweet}
-          onChangeText={onChangeText}
-          placeholder={"Edit your tweet"}
-          value={text}
-          style={styles.input}
-        />
-        <TouchableOpacity onPress={addTweet}>
-          <Text style={styles.post}>Post</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TextInput
+            onSubmitEditing={addTweet}
+            onChangeText={onChangeText}
+            placeholder={"Edit your tweet"}
+            value={text}
+            style={styles.input}
+          />
+          <TouchableOpacity onPress={addTweet}>
+            <Text style={styles.post}>Post</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: "row", paddingRight: 20 }}>
+          <Text style={{ color: theme.blue }}>@</Text>
+          <TextInput
+            onSubmitEditing={addNickname}
+            onChangeText={onChangeNick}
+            placeholder={"nickname"}
+            value={nickname}
+            style={styles.inputnickname}
+          />
+        </View>
       </View>
       <ScrollView>
         {init &&
@@ -113,7 +120,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#74b9ff",
   },
   toTweet: {
     backgroundColor: "white",
@@ -141,24 +148,25 @@ const styles = StyleSheet.create({
   post: {
     color: "white",
     backgroundColor: theme.blue,
-    fontSize: 18,
     marginVertical: 10,
     marginRight: 20,
+    fontSize: 20,
+    paddingHorizontal: 5,
   },
   inputpadding: {
     backgroundColor: theme.grey,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   input: {
     backgroundColor: "white",
     paddingHorizontal: 15,
     marginLeft: 20,
     marginVertical: 20,
-    fontSize: 15,
+    fontSize: 20,
   },
   inputnickname: {
-    backgroundColor: "black",
     color: theme.blue,
   },
   header: {

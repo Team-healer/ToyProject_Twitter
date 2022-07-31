@@ -13,15 +13,13 @@ let tweets = [
   {
     id: "2",
     text: "안뇽!(기존 트윗1)",
-    createdAt: Date.now().toString(),
+    createdAt: (Date.now() - 150000).toString(),
     name: "Ellie",
     username: "ellie",
     heart: ["bob"],
   },
 ];
 const router = express.Router();
-console.log("refresh!");
-console.log(tweets);
 // GET /tweets
 // GET /tweets?username=:username
 router.get("/", (req, res, next) => {
@@ -83,13 +81,10 @@ router.get("/heart/:postId/:username", (req, res, next) => {
   const clickedTweet = tweets.find((tweet) => tweet.id === postId);
   const check = clickedTweet.heart.includes(username);
   if (check) {
-    console.log("already did heart");
     clickedTweet.heart = clickedTweet.heart.filter((e) => e !== username);
   } else {
-    console.log("i will +1 heart");
     clickedTweet.heart.push(username);
   }
-  console.log(tweets);
   res.sendStatus(200);
 });
 
